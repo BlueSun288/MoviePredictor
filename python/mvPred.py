@@ -43,31 +43,66 @@ def probMovieGivenMovieRating(tgt, movie, rating):
 
 
 
-    # Gets all instances of tgt
+    # Gets all instances of tgt being rated
     try:
-        mRt = rt.loc[rt["Movie"]==tgt]
+        tRt = rt.loc[rt["Movie"]==tgt]
     except:
         print("error getting tgt")
+    #print("done getting tgt")
+    # Isolates each unique user's id that has rated the tgt into a list
+    tInd = tRt["User"].unique().tolist()
+    #tInd = pd.DataFrame(tInd)
 
-    # Isolates each unique user's id that has rated the tgt movie into a list
-    uInd = mRt["User"].unique().tolist()
-    print("done getting tgt")
-    # Gets all ratings from users who gave a rating to tgt & movie
-    mRt = rt.loc[uInd]
-    uInd.sort()
+    #tRt = rt.loc[tInd]
+    tInd.sort()
+
+
+    # Gets all instances of movie being rated
     try:
-        mRt = mRt.loc[rt["Movie"] == movie]
+        mRt = rt.loc[rt["Movie"] == movie]
     except:
         print("error getting movie")
-    print("done getting movie")
-    uInd = mRt["User"].unique().tolist()
-    mRt = rt.loc[uInd]
-    print(uInd)
-    print(mRt)
+    #print("done getting movie")
+
+    #print (mRt)
+    # Isolates each unique user's id that has rated the movie into a list
+    mInd = mRt["User"].unique().tolist()
+    mInd.sort()
+
+    #List of Users who've rated both tgt & movie
+    gInd = []
+    for t in tInd:
+        for m in mInd:
+            if(t == m):
+                gInd.append(t)
+
+
+
+    # Dataframe of all users & their ratings where they gave a rating to tgt & movie
+    mRt = rt.loc[gInd]
+
+    mvs = [tgt, movie]
+    tmp = {"User":[], "Movie":[], "Rating":[]}
+    mvsRatings = pd.DataFrame(tmp)
+
+    for item in mvs:
+        mvsRatings = mvsRatings.append(mRt.loc[mRt["Movie"] == item], ignore_index = True)
+
+
+    mvsRatings = mvsRatings.astype('int32')
+    mvsRatings.set_index("User", inplace=True, drop=False)
+    # mvsRatings is a dataframe of tgt or movie ratings from user's who rated both
+
+    if mvsRatings.empty:
+        # If mvsRatings is empty then there are no user's that rated both so return 1 to not affect the probability equation
+        return 1
 
 
 
 
+
+
+#####################
 # Path to data files
 DataPath = "Training/tRatings.csv"
 MoviesPath = "moviesData.csv"
@@ -85,9 +120,15 @@ mvLength = len(mv.index)
 # print(mv)
 # runMachine()
 
+for i in range(1, 3000):
+    print(i)
+    probMovieGivenMovieRating(i, 8, 5)
+    probMovieGivenMovieRating(i, 45, 5)
+    probMovieGivenMovieRating(i, 23, 5)
+    probMovieGivenMovieRating(i, 115, 5)
 
 #print(probMovie(150))
-probMovieGivenMovieRating(100, 250, 5)
+probMovieGivenMovieRating(45, 20, 5)
 #print(rt.columns.values)
 # print(rt.loc[2])
 
