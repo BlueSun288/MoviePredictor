@@ -6,10 +6,11 @@
 
 import pandas as pd
 import numpy as np
-import predictor
+# import predictor
 
 
-
+def getPredictions(ratings):
+    print()
 
 def runMachine():
     # Iterates through list of movies to determine P(MovieRating == 5 | inputs...) for each movie

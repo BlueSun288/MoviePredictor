@@ -3,14 +3,14 @@ from tkinter import ttk
 import pandas as pd
 
 
-from tkinter import * #IMPORTS ALL WIDGEST FROM THE PACKAGE
+from tkinter import * #IMPORTS ALL WIDGETS FROM THE PACKAGE
 
 
 
 app=tk.Tk()# CREATES THE WINDOW
 app.geometry('900x900') # DEFAULT WINDOW SIZE WHEN IT OPENS
 
-df1=pd.read_csv('/Users/hy1138vs/Documents/GitHub/MoviePredictor/python/moviesData.csv')
+df1=pd.read_csv('moviesData.csv')
 df2=df1[["Movie"]]
 movies = [ ]
 for i in df2.iterrows():
@@ -58,7 +58,7 @@ entry.grid(column =1, row =16) # should be placed to the right and below the add
 pmovies =tk.Text(app)# creates a jtextArea sorta thing to display the movies that are predicted to the user. it should be placed  below the predict value button
 pmovies.grid(column =0, row =23)
 
-def pmov(): ####### this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
+def pmov(): ####### this is the function where the ML will essentially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.insert('2.0','the predicted movies are' )
 
 button1 = tk.Button(app, text='Predict Film', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user
