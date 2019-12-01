@@ -9,18 +9,38 @@ import numpy as np
 # import predictor
 
 
-def getPredictions(ratings):
-	print()
+def getPredictions(ratings): # Takes in dataframe of [movieID, rating]s & returns dataframe of top 5 [movieID, certainty] where certainty is the highest.
 
+	#Initializes
+	vals = [["a",-1],["a",-1],["a",-1],["a",-1],["a",-1]]
+	out = pd.DataFrame(vals, columns=["movieID", "Certainty"])
+
+	for movie in mv.Index:
+		val = 0
+		for rating in ratings.Index:
+			# Gets certainty for each Movie given the user's ratings
+			val += ln.loc[movie][rating['movieID']] * (1 - rating['rating'] % 5)
+		vals.append([movie, val]) # Array of certainty for each movie in list
+
+	# Sorts vals by Certainty, descending
+	vals.sort(key=sortCertainty, reverse=True)
+
+	# Puts the top 5 [movieId, Certainty]s into out
+	for i in range(0,5):
+		out.iloc[i] = vals[i]
+
+	return out
+
+def sortCertainty(val):
+	return val[1]
 
 
 def runMachine():
 	# Learning
 	for i in mv.index:
 		for j in mv.index:
-			a = probMovieGivenMovieRating(i)
-			mv[i, "P"] = a
-			print(i," ",a)
+			ln.at[i][j] = probMovieGivenMovieRating(i, j)
+
 	print("Done Learning")
 
 
@@ -87,8 +107,6 @@ def probMovieGivenMovieRating(tgt, movie):
 	# Dataframe of all users & their ratings where they gave a rating to tgt & movie
 	mRt = rt.loc[gInd]
 
-	print(mRt)
-
 	mvs = [tgt, movie]
 	tmp = {"User":[], "Movie":[], "Rating":[]}
 	mvsRatings = pd.DataFrame(tmp)
@@ -114,17 +132,22 @@ def probMovieGivenMovieRating(tgt, movie):
 # Path to data files
 DataPath = "Training/tRatings.csv"
 MoviesPath = "moviesData.csv"
+LearningPath = "learning.csv"
 # Reads in ratings and converts it to a data frame
 # Cols: User, Movie, Rating
 rt = pd.DataFrame(pd.read_csv(DataPath))  # , index_col = "User"
 rt.set_index("User",inplace=True, drop=False)
-
 rtLength = len(rt.index)
+
 # Cols: Index, Movie
 mv = pd.DataFrame(pd.read_csv(MoviesPath))
 mv.set_index('Index',inplace=True, drop=False)
-
 mvLength = len(mv.index)
+
+#Cols: Each movieID
+#Rows: Each movieID
+ln = pd.DataFrame(pd.read_csv(LearningPath))
+ln.set_index()
 # print(mv)
 # runMachine()
 
