@@ -10,93 +10,100 @@ import numpy as np
 
 
 def getPredictions(ratings):
-    print()
+	print()
+
+
 
 def runMachine():
-    # Iterates through list of movies to determine P(MovieRating == 5 | inputs...) for each movie
-    for ind in mv.index:
-        a = probMovie(ind)
-        mv[ind, "P"] = a
-        print(ind," ",a)
-    print("done")
+	# Learning
+	for i in mv.index:
+		for j in mv.index:
+			a = probMovieGivenMovieRating(i)
+			mv[i, "P"] = a
+			print(i," ",a)
+	print("Done Learning")
 
 
 def probMovie(tgt):   # int ind: Index of target movie
-    # Finds P(MovieRating == 5) for a given movie
-    # Gets all instances of tgt
-    try:
-        mRt = rt.loc[rt["Movie"]==tgt]
-    except:
-        return 0
-    # Gets a count of all instances that got a rating of 5
+	# Finds P(MovieRating == 5) for a given movie
+	# Gets all instances of tgt
+	try:
+		mRt = rt.loc[rt["Movie"]==tgt]
+	except:
+		return 0
+	# Gets a count of all instances that got a rating of 5
 
-    try:
-        return mRt["Rating"].value_counts()[5] / len(mRt.index)
-    except:
-        return -1
-    #Returns  (count of MovieRating == 5) / (total size of ratings dataset)
+	try:
+		return mRt["Rating"].value_counts()[5] / len(mRt.index)
+	except:
+		return -1
+	#Returns  (count of MovieRating == 5) / (total size of ratings dataset)
 
-def probMovieGivenMovieRating(tgt, movie, rating):
-    # P(Movie tgt | Movie == #)
-    # int tgt:          Index of movie for which the prob is being calc'd
-    # int movie:        Index of movie which the user has entered a rating for
-    # int rating(1-5):  Rating the user has given the movie
-
+def probMovieGivenMovieRating(tgt, movie):
+	# P(Movie tgt | Movie == #)
+	# int tgt:          Index of movie for which the prob is being calc'd
+	# int movie:        Index of movie which the user has entered a rating for
 
 
-    # Gets all instances of tgt being rated
-    try:
-        tRt = rt.loc[rt["Movie"]==tgt]
-    except:
-        print("error getting tgt")
-    #print("done getting tgt")
-    # Isolates each unique user's id that has rated the tgt into a list
-    tInd = tRt["User"].unique().tolist()
-    #tInd = pd.DataFrame(tInd)
-
-    #tRt = rt.loc[tInd]
-    tInd.sort()
+	if tgt == movie:            # If tgt == movie then this should be P(tgt)
+		return probMovie(tgt)
 
 
-    # Gets all instances of movie being rated
-    try:
-        mRt = rt.loc[rt["Movie"] == movie]
-    except:
-        print("error getting movie")
-    #print("done getting movie")
+	# Gets all instances of tgt being rated
+	try:
+		tRt = rt.loc[rt["Movie"]==tgt]
+	except:
+		print("error getting tgt")
+	#print("done getting tgt")
+	# Isolates each unique user's id that has rated the tgt into a list
+	tInd = tRt["User"].unique().tolist()
+	#tInd = pd.DataFrame(tInd)
 
-    #print (mRt)
-    # Isolates each unique user's id that has rated the movie into a list
-    mInd = mRt["User"].unique().tolist()
-    mInd.sort()
-
-    #List of Users who've rated both tgt & movie
-    gInd = []
-    for t in tInd:
-        for m in mInd:
-            if(t == m):
-                gInd.append(t)
+	#tRt = rt.loc[tInd]
+	tInd.sort()
 
 
+	# Gets all instances of movie being rated
+	try:
+		mRt = rt.loc[rt["Movie"] == movie]
+	except:
+		print("error getting movie")
+	#print("done getting movie")
 
-    # Dataframe of all users & their ratings where they gave a rating to tgt & movie
-    mRt = rt.loc[gInd]
+	#print (mRt)
+	# Isolates each unique user's id that has rated the movie into a list
+	mInd = mRt["User"].unique().tolist()
+	mInd.sort()
 
-    mvs = [tgt, movie]
-    tmp = {"User":[], "Movie":[], "Rating":[]}
-    mvsRatings = pd.DataFrame(tmp)
+	#List of Users who've rated both tgt & movie
+	gInd = []
+	for t in tInd:
+		for m in mInd:
+			if(t == m):
+				gInd.append(t)
 
-    for item in mvs:
-        mvsRatings = mvsRatings.append(mRt.loc[mRt["Movie"] == item], ignore_index = True)
 
 
-    mvsRatings = mvsRatings.astype('int32')
-    mvsRatings.set_index("User", inplace=True, drop=False)
-    # mvsRatings is a dataframe of tgt or movie ratings from user's who rated both
+	# Dataframe of all users & their ratings where they gave a rating to tgt & movie
+	mRt = rt.loc[gInd]
 
-    if mvsRatings.empty:
-        # If mvsRatings is empty then there are no user's that rated both so return 1 to not affect the probability equation
-        return 1
+	print(mRt)
+
+	mvs = [tgt, movie]
+	tmp = {"User":[], "Movie":[], "Rating":[]}
+	mvsRatings = pd.DataFrame(tmp)
+
+	for item in mvs:
+		mvsRatings = mvsRatings.append(mRt.loc[mRt["Movie"] == item], ignore_index = True)
+
+
+	mvsRatings = mvsRatings.astype('int32')
+	mvsRatings.set_index("User", inplace=True, drop=False)
+	# mvsRatings is a dataframe of tgt or movie ratings from user's who've rated both
+
+	if mvsRatings.empty:
+		# If mvsRatings is empty then there are no user's that rated both so return 1 to not affect the probability equation
+		return 1
 
 
 
@@ -121,12 +128,7 @@ mvLength = len(mv.index)
 # print(mv)
 # runMachine()
 
-for i in range(1, 3000):
-    print(i)
-    probMovieGivenMovieRating(i, 8, 5)
-    probMovieGivenMovieRating(i, 45, 5)
-    probMovieGivenMovieRating(i, 23, 5)
-    probMovieGivenMovieRating(i, 115, 5)
+
 
 #print(probMovie(150))
 probMovieGivenMovieRating(45, 20, 5)
