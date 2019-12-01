@@ -10,7 +10,7 @@ app=tk.Tk()# CREATES THE WINDOW
 app.geometry('900x500') # window size
 app.title('Movie Predictor')
 #print('hello world')
-df1=pd.read_csv('/Users/hy1138vs/Documents/GitHub/MoviePredictor/python/moviesData.csv')
+df1=pd.read_csv('moviesData.csv')
 df1.set_index('Index',inplace=True, drop=False)
 df2=df1["Movie"]
 print (df1)
@@ -21,7 +21,7 @@ for i in df2:
 
 mymovrat=[ ]
 
-labelTop = tk.Label(app,text = "Choose your favourite movie") # CREATES A LABEL
+labelTop = tk.Label(app,text = "Choose a movie") # CREATES A LABEL
 labelTop.grid(column=0, row=0) #POSITION OF CREATED LABEL
 
 combomov = ttk.Combobox(app,values=movies,state='readonly', width = 50) # CREATES A COMBO BOX. tHIS IS THE COMBOBOX THAT CONTAINED THE MOVIE NAME
@@ -63,7 +63,7 @@ pmovies.grid(column =0, row =24)
 
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
-    pmovies.insert('2.0','the predicted movies are' )
+    pmovies.insert('2.0','Your predicted movies are:\n' )
     usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("user_mo_index", drop=True)
     #print(usemov)
