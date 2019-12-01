@@ -64,7 +64,10 @@ pmovies.grid(column =0, row =24)
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
     pmovies.insert('2.0','the predicted movies are' )
-    usemov = pd.DataFrame(mymovrat, columns = ['user_mo', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
+    usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
+    ratings = usemov.set_index("user_mo_index", drop=True)
+    #print(usemov)
+    print (ratings)
     #mvPred.getPredictions(usemov)# sends df to getPrediction
     pmovies.configure(state='disabled')
 
