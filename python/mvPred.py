@@ -158,9 +158,6 @@ mvLength = len(mv.index)
 ln = pd.DataFrame(pd.read_csv(LearningPath))
 # ln.set_index('id', inplace=True, drop=True)
 
-#print(ln.rows)
-
-ld = pd.data
 
 
 runMachine()
