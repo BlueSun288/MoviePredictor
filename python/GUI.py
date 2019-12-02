@@ -1,7 +1,9 @@
 import tkinter as tk # PACKAGE USED FOR CREATING GUI
 from tkinter import ttk
 import pandas as pd
-#import mvPred
+
+mvprd = "mvPredictor"
+mvPredictor = __import__(mvprd)
 from tkinter import * #IMPORTS ALL WIDGEST FROM THE PACKAGE
 
 #import mvPred
@@ -13,7 +15,7 @@ app.title('Movie Predictor')
 df1=pd.read_csv('moviesData.csv')
 df1.set_index('Index',inplace=True, drop=False)
 df2=df1["Movie"]
-print (df1)
+#print (df1)
 
 movies = []
 for i in df2:
@@ -64,11 +66,11 @@ pmovies.grid(column =0, row =24)
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
     pmovies.insert('2.0','Your predicted movies are:\n' )
-    usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
-    ratings = usemov.set_index("user_mo_index", drop=True)
+    usemov = pd.DataFrame(mymovrat, columns = ['movieid', 'rating'])##puts the user chosen movie id and the user chosen rating in a df
+    ratings = usemov.set_index("movieid", drop=True)
     #print(usemov)
-    print (ratings)
-    #mvPred.getPredictions(usemov)# sends df to getPrediction
+    # print (ratings)
+    mvPredictor.getPredictions(usemov)# sends df to getPrediction
     pmovies.configure(state='disabled')
 
 button1 = tk.Button(app, text='Predict Film', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user

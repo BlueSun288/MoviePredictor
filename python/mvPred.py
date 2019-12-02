@@ -5,36 +5,6 @@
 # will give it a rating of 5
 
 import pandas as pd
-import numpy as np
-# import predictor
-
-
-def getPredictions(ratings): # Takes in dataframe of [movieID, rating]s & returns dataframe of top 5 [movieID, certainty] where certainty is the highest.
-
-	#Initializes
-	ld = pd.DataFrame("learned.csv",index='id')                 #Learned values
-	vals = [["a",-1],["a",-1],["a",-1],["a",-1],["a",-1]]
-	out = pd.DataFrame(vals, columns=["movieID", "Certainty"])
-
-	for movie in mv.Index:
-		val = 1
-		for rating in ratings.Index:
-			# Gets certainty for each Movie given the user's ratings
-			val *= ld.loc[movie][rating['movieID']] * (1 - rating['rating'] % 5)
-		vals.append([movie, val]) # Array of certainty for each movie in list
-
-	# Sorts vals by Certainty, descending
-	vals.sort(key=sortCertainty, reverse=True)
-
-	# Puts the top 5 [movieId, Certainty]s into out
-	for i in range(0,4):
-		out.iloc[i] = vals[i]
-
-	return out
-
-def sortCertainty(val):
-	return val[1]
-
 
 def runMachine():
 	# Learning
