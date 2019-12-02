@@ -5,23 +5,20 @@
 # will give it a rating of 5
 
 import pandas as pd
-import numpy as np
-# import predictor
-
-
-def getPredictions(ratings):
-	print()
-
-
 
 def runMachine():
 	# Learning
+	print("Learning")
 	for i in mv.index:
+		print(i)
 		for j in mv.index:
-			a = probMovieGivenMovieRating(i)
-			mv[i, "P"] = a
-			print(i," ",a)
+
+			a = probMovieGivenMovieRating(i, j)
+			ln.iat[i,j] = a
+			# print(i,":",j," : ", ln.iat[i, j])
+			# print(j, " : ", ln.iloc[i][j])
 	print("Done Learning")
+	ln.to_csv("learned.csv", sep=",")
 
 
 def probMovie(tgt):   # int ind: Index of target movie
@@ -87,8 +84,6 @@ def probMovieGivenMovieRating(tgt, movie):
 	# Dataframe of all users & their ratings where they gave a rating to tgt & movie
 	mRt = rt.loc[gInd]
 
-	print(mRt)
-
 	mvs = [tgt, movie]
 	tmp = {"User":[], "Movie":[], "Rating":[]}
 	mvsRatings = pd.DataFrame(tmp)
@@ -104,7 +99,8 @@ def probMovieGivenMovieRating(tgt, movie):
 	if mvsRatings.empty:
 		# If mvsRatings is empty then there are no user's that rated both so return 1 to not affect the probability equation
 		return 1
-
+	else:
+		return (len(mvsRatings.index) * 2) / 3624
 
 
 
@@ -114,31 +110,27 @@ def probMovieGivenMovieRating(tgt, movie):
 # Path to data files
 DataPath = "Training/tRatings.csv"
 MoviesPath = "moviesData.csv"
+LearningPath = "learning.csv"
 # Reads in ratings and converts it to a data frame
 # Cols: User, Movie, Rating
 rt = pd.DataFrame(pd.read_csv(DataPath))  # , index_col = "User"
 rt.set_index("User",inplace=True, drop=False)
-
 rtLength = len(rt.index)
+
 # Cols: Index, Movie
 mv = pd.DataFrame(pd.read_csv(MoviesPath))
 mv.set_index('Index',inplace=True, drop=False)
-
 mvLength = len(mv.index)
-# print(mv)
+
+#Cols: Each movieID
+#Rows: Each movieID
+
+ln = pd.DataFrame(pd.read_csv(LearningPath))
+# ln.set_index('id', inplace=True, drop=True)
+
+
+# Starts the learning process. Very long; avoid doing
 # runMachine()
-
-
-
-#print(probMovie(150))
-probMovieGivenMovieRating(45, 20, 5)
-#print(rt.columns.values)
-# print(rt.loc[2])
-
-
-
-
-
 
 
 
