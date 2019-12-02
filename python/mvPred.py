@@ -12,21 +12,22 @@ import numpy as np
 def getPredictions(ratings): # Takes in dataframe of [movieID, rating]s & returns dataframe of top 5 [movieID, certainty] where certainty is the highest.
 
 	#Initializes
+	ld = pd.DataFrame("learned.csv",index='id')                 #Learned values
 	vals = [["a",-1],["a",-1],["a",-1],["a",-1],["a",-1]]
 	out = pd.DataFrame(vals, columns=["movieID", "Certainty"])
 
 	for movie in mv.Index:
-		val = 0
+		val = 1
 		for rating in ratings.Index:
 			# Gets certainty for each Movie given the user's ratings
-			val += ln.loc[movie][rating['movieID']] * (1 - rating['rating'] % 5)
+			val *= ld.loc[movie][rating['movieID']] * (1 - rating['rating'] % 5)
 		vals.append([movie, val]) # Array of certainty for each movie in list
 
 	# Sorts vals by Certainty, descending
 	vals.sort(key=sortCertainty, reverse=True)
 
 	# Puts the top 5 [movieId, Certainty]s into out
-	for i in range(0,5):
+	for i in range(0,4):
 		out.iloc[i] = vals[i]
 
 	return out
@@ -37,11 +38,17 @@ def sortCertainty(val):
 
 def runMachine():
 	# Learning
+	print("Learning")
 	for i in mv.index:
+		print(i)
 		for j in mv.index:
-			ln.at[i][j] = probMovieGivenMovieRating(i, j)
 
+			a = probMovieGivenMovieRating(i, j)
+			ln.iat[i,j] = a
+			# print(i,":",j," : ", ln.iat[i, j])
+			# print(j, " : ", ln.iloc[i][j])
 	print("Done Learning")
+	ln.to_csv("learned.csv", sep=",")
 
 
 def probMovie(tgt):   # int ind: Index of target movie
@@ -122,7 +129,8 @@ def probMovieGivenMovieRating(tgt, movie):
 	if mvsRatings.empty:
 		# If mvsRatings is empty then there are no user's that rated both so return 1 to not affect the probability equation
 		return 1
-
+	else:
+		return (len(mvsRatings.index) * 2) / 3624
 
 
 
@@ -146,22 +154,16 @@ mvLength = len(mv.index)
 
 #Cols: Each movieID
 #Rows: Each movieID
+
 ln = pd.DataFrame(pd.read_csv(LearningPath))
-ln.set_index()
-# print(mv)
-# runMachine()
+# ln.set_index('id', inplace=True, drop=True)
+
+#print(ln.rows)
+
+ld = pd.data
 
 
-
-#print(probMovie(150))
-probMovieGivenMovieRating(45, 20, 5)
-#print(rt.columns.values)
-# print(rt.loc[2])
-
-
-
-
-
+runMachine()
 
 
 
