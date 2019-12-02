@@ -159,8 +159,8 @@ ln = pd.DataFrame(pd.read_csv(LearningPath))
 # ln.set_index('id', inplace=True, drop=True)
 
 
-
-runMachine()
+# Starts the learning process. Very long; avoid doing
+# runMachine()
 
 
 
