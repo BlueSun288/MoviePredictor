@@ -21,10 +21,11 @@ df2=df1["Movie"]
 #>>>>>>> d5a554eb2b46e1a58fa429541cea0a9959a47da7
 
 movies = []
-for i in df2:
+for i in df2:# adds only the movies to a list
     movies.append(i)
 
-mymovrat=[ ]
+mymovrat=[ ]#creates input list
+predic_mov=[ ]#creates output list
 
 labelTop = tk.Label(app,text = "Choose a movie") # CREATES A LABEL
 labelTop.grid(column=0, row=0) #POSITION OF CREATED LABEL
@@ -47,11 +48,10 @@ labelr.grid(column=0, row=4)#  PUTS THE LABEL ON THE APP WITH A POSITION
 
 def cmov(): # FUNCTION TO GIVE PROPERTY TO THE ADD RATING BUTTON. IT SELECTS THE MOVIE CHOSEN  AND THE RATINGS CHOSE. Gets the id and rating of the movie chosen
     entry.configure(state='normal')#enables text entry
-
     ind=combomov.current() +1
     #print(ind)
     mymovrat.append([ind, comborat.get()])# put the id and rating in a list
-    entry.insert('2.0',combomov.get() +' rating- '+ comborat.get() + ', \n  ')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
+    entry.insert('2.0',combomov.get() +' rating- '+ comborat.get() + ',\n')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
     entry.configure(state='disabled')#disables text entry
 
 button = tk.Button(app, text='Add Rating', width=25, command = cmov)# add a putton and send its command to cmove,the function defined above
@@ -68,19 +68,28 @@ pmovies.grid(column =0, row =24)
 
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
-#<<<<<<< HEAD
-    pmovies.insert('2.0',df2 )
     usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("user_mo_index", drop=True)
-#=======
-    pmovies.insert('2.0','Your predicted movies are:\n' )
+    pmovies.insert('2.0',' Predicted movies with a certainty(out of 1) :\n' )
     usemov = pd.DataFrame(mymovrat, columns = ['movieid', 'rating'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("movieid", drop=True)
-#>>>>>>> d5a554eb2b46e1a58fa429541cea0a9959a47da7
-    #print(usemov)
-    # print (ratings)
-    mvPredictor.getPredictions(usemov)# sends df to getPrediction
-    #pmovies.configure(state='disabled')
+    predic_mov_id=mvPredictor.getPredictions(usemov)# sends df to getPrediction
+
+    for x in predic_mov_id["movieID"]:#gets movie name from id
+        predic_mov.append(df1.loc[x,"Movie"])
+
+
+    #print(predic_mov)
+    predic_mov_id['MovieName'] = predic_mov#adds movie name to output
+    predic_mov_id = predic_mov_id.drop('movieID', 1)#removes id from output
+    predic_mov_id = predic_mov_id[['MovieName','Certainty']]
+    predic_mov_id.set_index('MovieName', inplace=True, drop=True)
+    #print (predic_mov_id)
+    pmovies.insert('2.0',predic_mov_id )#display output
+    ####disables buttons####
+    button.configure(state='disabled')
+    button1.configure(state='disabled')
+    pmovies.configure(state='disabled')
     
 
 button1 = tk.Button(app, text='Predict Film', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user
