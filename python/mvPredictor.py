@@ -20,7 +20,6 @@ def getPredictions(ratings): # Takes in dataframe of [movieID, rating]s & return
 			c = a * b
 
 			val *= c
-
 		#print(i,": ", val)
 		vals.append([i, val]) # Array of certainty for each movie in list
 
@@ -30,7 +29,7 @@ def getPredictions(ratings): # Takes in dataframe of [movieID, rating]s & return
 	# Puts the top 5 [movieId, Certainty]s into out
 	for i in range(0,5):
 		out.iloc[i] = vals[i]
-	print(out)
+	#print(out)
 	return out
 
 def sortCertainty(val):

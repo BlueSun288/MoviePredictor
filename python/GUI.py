@@ -51,7 +51,7 @@ def cmov(): # FUNCTION TO GIVE PROPERTY TO THE ADD RATING BUTTON. IT SELECTS THE
     ind=combomov.current() +1
     #print(ind)
     mymovrat.append([ind, comborat.get()])# put the id and rating in a list
-    entry.insert('2.0',combomov.get() +' rating- '+ comborat.get() + ',\n')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
+    entry.insert('2.0',combomov.get() +' Rating: '+ comborat.get() + ',\n')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
     entry.configure(state='disabled')#disables text entry
 
 button = tk.Button(app, text='Add Rating', width=25, command = cmov)# add a putton and send its command to cmove,the function defined above
@@ -70,7 +70,7 @@ def pmov(): ##this is the function where the ML will essenatially perform. IT sh
     pmovies.configure(state='normal')
     usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("user_mo_index", drop=True)
-    pmovies.insert('2.0',' Predicted movies with a certainty(out of 1) :\n' )
+    pmovies.insert('2.0',' Predicted movies with certainty:\n' )
     usemov = pd.DataFrame(mymovrat, columns = ['movieid', 'rating'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("movieid", drop=True)
     predic_mov_id=mvPredictor.getPredictions(usemov)# sends df to getPrediction
