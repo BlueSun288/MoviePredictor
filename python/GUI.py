@@ -13,7 +13,6 @@ app.title('Movie Predictor')
 df1=pd.read_csv('/Users/hy1138vs/Documents/GitHub/MoviePredictor/python/moviesData.csv')
 df1.set_index('Index',inplace=True, drop=False)
 df2=df1["Movie"]
-print (df1)
 
 movies = []
 for i in df2:
@@ -42,11 +41,11 @@ labelr.grid(column=0, row=4)#  PUTS THE LABEL ON THE APP WITH A POSITION
 
 def cmov(): # FUNCTION TO GIVE PROPERTY TO THE ADD RATING BUTTON. IT SELECTS THE MOVIE CHOSEN  AND THE RATINGS CHOSE. Gets the id and rating of the movie chosen
     entry.configure(state='normal')#enables text entry
-    print('\n')
+
     ind=combomov.current() +1
     #print(ind)
     mymovrat.append([ind, comborat.get()])# put the id and rating in a list
-    entry.insert('2.0',combomov.get() +' '+ comborat.get() + ',  ')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
+    entry.insert('2.0',combomov.get() +' rating- '+ comborat.get() + ', \n  ')# IT DISPLAYS THE USERS CHOICES IN A jTextArea sorta component named entry
     entry.configure(state='disabled')#disables text entry
 
 button = tk.Button(app, text='Add Rating', width=25, command = cmov)# add a putton and send its command to cmove,the function defined above
@@ -63,13 +62,14 @@ pmovies.grid(column =0, row =24)
 
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
-    pmovies.insert('2.0','the predicted movies are' )
+    pmovies.insert('2.0',df2 )
     usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("user_mo_index", drop=True)
     #print(usemov)
     print (ratings)
     #mvPred.getPredictions(usemov)# sends df to getPrediction
     pmovies.configure(state='disabled')
+    
 
 button1 = tk.Button(app, text='Predict Film', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user
 button1.grid(column=0, row =22)
