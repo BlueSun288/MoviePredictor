@@ -63,14 +63,14 @@ labelmo.grid(column =0 ,row =16)
 entry=tk.Text(app,width = 45 ,height= 10 ,state='disabled')# creates a jtextArea sorta thing to display the movies chosen by the user
 entry.grid(column =1, row =16)
 
-pmovies =tk.Text(app,width = 45 ,height= 10,state='disabled')# creates a jtextArea sorta thing to display the movies that are predicted to the user. it should be placed  below the predict value button
+pmovies =tk.Text(app,width = 60 ,height= 10,state='disabled')# creates a jtextArea sorta thing to display the movies that are predicted to the user. it should be placed  below the predict value button
 pmovies.grid(column =0, row =24)
 
 def pmov(): ##this is the function where the ML will essenatially perform. IT should choose the movie and the rating and this function is what the predict value buttton will do
     pmovies.configure(state='normal')
     usemov = pd.DataFrame(mymovrat, columns = ['user_mo_index', 'user_rat'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("user_mo_index", drop=True)
-    pmovies.insert('2.0',' Predicted movies with certainty:\n' )
+    pmovies.insert('2.0','Predicted movies with certainty(out of 1):\n' )
     usemov = pd.DataFrame(mymovrat, columns = ['movieid', 'rating'])##puts the user chosen movie id and the user chosen rating in a df
     ratings = usemov.set_index("movieid", drop=True)
     predic_mov_id=mvPredictor.getPredictions(usemov)# sends df to getPrediction
@@ -92,7 +92,7 @@ def pmov(): ##this is the function where the ML will essenatially perform. IT sh
     pmovies.configure(state='disabled')
     
 
-button1 = tk.Button(app, text='Predict Film', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user
+button1 = tk.Button(app, text='Predict Movies', width=25, command=pmov)# this is the predict values button that does should dispaly the predicted  moivies to the user
 button1.grid(column=0, row =22)
 
 app.mainloop() # runs the app as a loop . it is important for app to run in tkinters a loop . it is important for app to run in tkinter
